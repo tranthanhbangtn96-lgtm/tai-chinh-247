@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dịch Vụ Tài Chính - Đăng Ký Tư Vấn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #1a1a3e, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15,12,41,0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: 800;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo i { margin-right: 8px; }
+        .header-phone {
+            color: #ffd200;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .header-phone i { margin-right: 6px; }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 140px 5% 80px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hero h1 {
+            font-size: 3em;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .hero-stats .stat {
+            text-align: center;
+        }
+        .hero-stats .num {
+            font-size: 2em;
+            font-weight: 800;
+            color: #ffd200;
+        }
+        .hero-stats .label {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== SERVICES ===== */
+        .services {
+            padding: 80px 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .section-sub {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 50px;
+            font-size: 1.05em;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        .service-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: #f7971e;
+            box-shadow: 0 20px 40px rgba(247,151,30,0.1);
+        }
+        .service-card i {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .service-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .service-card p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9em;
+        }
+
+        /* ===== FORM ===== */
+        .form-section {
+            padding: 80px 5%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95em;
+            color: rgba(255,255,255,0.8);
+        }
+        .form-group label .required {
+            color: #f7971e;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f7971e;
+            box-shadow: 0 0 0 3px rgba(247,151,30,0.2);
+        }
+        .form-group select option {
+            background: #1a1a3e;
+            color: #fff;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            border: none;
+            border-radius: 10px;
+            color: #0f0c29;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(247,151,30,0.3);
+        }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .loading-spinner i {
+            font-size: 1.5em;
+            color: #ffd200;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Success */
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        .success-msg i {
+            font-size: 3em;
+            color: #4ade80;
+            margin-bottom: 15px;
+        }
+        .success-msg h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .success-msg p {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Error */
+        .error-msg {
+            display: none;
+            padding: 12px 16px;
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px;
+            color: #f87171;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        /* ===== STEPS ===== */
+        .steps {
+            padding: 60px 5%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .step-item {
+            text-align: center;
+            padding: 20px;
+        }
+        .step-num {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            color: #0f0c29;
+            font-weight: 800;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        .step-item h4 {
+            margin-bottom: 8px;
+        }
+        .step-item p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9em;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 40px 5%;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #ffd200;
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2em; }
+            .services-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .hero-stats { gap: 20px; }
+            .hero { padding: 120px 5% 60px; }
+            .form-container { padding: 25px; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.6em; }
+            .section-title { font-size: 1.6em; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo"><i class="fas fa-coins"></i> Tài Chính 24/7</div>
+    <a href="tel:0918212460" class="header-phone"><i class="fas fa-phone-alt"></i> 0918 212 460</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Giải Pháp Tài Chính Thông Minh Cho Bạn</h1>
+    <p>Vay vốn nhanh - Lãi suất thấp - Hỗ trợ tận nơi. Đăng ký ngay để nhận tư vấn miễn phí!</p>
+    <div class="hero-stats">
+        <div class="stat"><div class="num">5,000+</div><div class="label">Khách hàng</div></div>
+        <div class="stat"><div class="num">15 phút</div><div class="label">Giải ngân</div></div>
+        <div class="stat"><div class="num">0%</div><div class="label">Phí ẩn</div></div>
+    </div>
+</section>
+
+<!-- DỊCH VỤ -->
+<section class="services" id="services">
+    <h2 class="section-title">Dịch Vụ Của Chúng Tôi</h2>
+    <p class="section-sub">Đa dạng giải pháp tài chính đáp ứng mọi nhu cầu</p>
+    <div class="services-grid">
+        <div class="service-card">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h3>Vay Tín Chấp</h3>
+            <p>Vay đến 100 triệu, không cần tài sản đảm bảo</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-home"></i>
+            <h3>Vay Thế Chấp</h3>
+            <p>Vay đến 5 tỷ với lãi suất ưu đãi nhất</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-briefcase"></i>
+            <h3>Vay Doanh Nghiệp</h3>
+            <p>Giải pháp vốn cho doanh nghiệp vừa và nhỏ</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-mobile-alt"></i>
+            <h3>Vay Online</h3>
+            <p>Đăng ký online - Nhận tiền trong ngày</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-exchange-alt"></i>
+            <h3>Chuyển Đổi Khoản Vay</h3>
+            <p>Hợp nhất các khoản vay với lãi suất thấp hơn</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Tư Vấn Tài Chính</h3>
+            <p>Hoạch định tài chính cá nhân toàn diện</p>
+        </div>
+    </div>
+</section>
+
+<!-- QUY TRÌNH -->
+<section class="steps">
+    <h2 class="section-title">Quy Trình Đơn Giản</h2>
+    <p class="section-sub">Chỉ 3 bước để nhận khoản vay của bạn</p>
+    <div class="steps-grid">
+        <div class="step-item">
+            <div class="step-num">1</div>
+            <h4>Đăng Ký</h4>
+            <p>Điền thông tin vào form bên dưới</p>
+        </div>
+        <div class="step-item">
+            <div class="step-num">2</div>
+            <h4>Thẩm Định</h4>
+            <p>Chuyên viên xác minh hồ sơ trong 15 phút</p>
+        </div>
+        <div class="step-item">
+            <div class="step-num">3</div>
+            <h4>Giải Ngân</h4>
+            <p>Nhận tiền ngay sau khi được duyệt</p>
+        </div>
+    </div>
+</section>
+
+<!-- FORM ĐĂNG KÝ -->
+<section class="form-section" id="dangky">
+    <div class="form-container">
+        <h2 style="text-align:center;font-size:1.8em;margin-bottom:10px;">Đăng Ký Tư Vấn</h2>
+        <p style="text-align:center;color:rgba(255,255,255,0.5);margin-bottom:30px;">
+            Điền thông tin bên dưới, chúng tôi sẽ liên hệ trong <strong>15 phút</strong>
+        </p>
+
+        <!-- Error message -->
+        <div class="error-msg" id="errorMsg"></div>
+
+        <!-- Form -->
+        <form id="registerForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Họ và tên <span class="required">*</span></label>
+                    <input type="text" name="hoTen" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại <span class="required">*</span></label>
+                    <input type="tel" name="soDienThoai" placeholder="0918 212 460" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CCCD/CMND <span class="required">*</span></label>
+                    <input type="text" name="cccd" placeholder="036 202 008 888" required>
+                </div>
+                <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <input type="date" name="ngaySinh">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Khoản vay mong muốn <span class="required">*</span></label>
+                    <select name="khoanVay" required>
+                        <option value="">-- Chọn --</option>
+                        <option value="10-30 triệu">10 - 30 triệu</option>
+                        <option value="30-50 triệu">30 - 50 triệu</option>
+                        <option value="50-100 triệu">50 - 100 triệu</option>
+                        <option value="100-500 triệu">100 - 500 triệu</option>
+                        <option value="500 triệu - 1 tỷ">500 triệu - 1 tỷ</option>
+                        <option value="Trên 1 tỷ">Trên 1 tỷ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mục đích vay</label>
+                <select name="mucDich">
+                    <option value="">-- Chọn --</option>
+                    <option value="Kinh doanh">Kinh doanh</option>
+                    <option value="Mua nhà">Mua nhà</option>
+                    <option value="Mua xe">Mua xe</option>
+                    <option value="Học tập">Học tập</option>
+                    <option value="Y tế">Y tế</option>
+                    <option value="Du lịch">Du lịch</option>
+                    <option value="Tiêu dùng">Tiêu dùng</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ghi chú</label>
+                <textarea name="ghiChu" placeholder="Thông tin thêm..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> GỬI ĐĂNG KÝ NGAY
+            </button>
+        </form>
+
+        <!-- Loading -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <i class="fas fa-circle-notch"></i>
+            <p style="margin-top:10px;color:rgba(255,255,255,0.6);">Đang gửi thông tin...</p>
+        </div>
+
+        <!-- Success -->
+        <div class="success-msg" id="successMsg">
+            <i class="fas fa-check-circle"></i>
+            <h3>Đăng Ký Thành Công!</h3>
+            <p>Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ trong vòng 15 phút.</p>
+            <p style="margin-top:15px;">
+                <a href="tel:0918212460" style="color:#ffd200;font-weight:600;">
+                    <i class="fas fa-phone-alt"></i> Gọi ngay: 0918 212 460
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section style="text-align:center;padding:40px 5%;">
+    <p style="font-size:1.2em;margin-bottom:20px;">Cần hỗ trợ ngay? Gọi hotline 24/7</p>
+    <a href="tel:0918212460" style="display:inline-block;padding:16px 40px;background:linear-gradient(90deg,#f7971e,#ffd200);border-radius:50px;color:#0f0c29;font-weight:700;text-decoration:none;font-size:1.3em;">
+        <i class="fas fa-phone-alt"></i> 0918 212 460
+    </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>© 2026 Tài Chính 24/7 — Dịch vụ tài chính uy tín hàng đầu Việt Nam</p>
+    <p style="margin-top:10px;">📞 <a href="tel:0918212460">0918 212 460</a> | 📧 info@taichinh247.vn</p>
+</footer>
+
+<script>
+(function() {
+    // 🎯 BẠN CẦN THAY URL_SCRIPT_GOOGLE bên dưới
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPu7tRU8qzNI4WDdEWt3qU71Vbi-6N9eK8sI69B-5F-5o4jbtn0L91jX7D_TS7Nl6U/exec';
+
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loading = document.getElementById('loadingSpinner');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Validate CCCD
+    function validateCCCD(value) {
+        const clean = value.replace(/[\s.]/g, '');
+        return clean.length === 9 || clean.length === 12;
+    }
+
+    // Validate phone
+    function validatePhone(value) {
+        const clean = value.replace(/[\s.-]/g, '');
+        return /^0\d{9,10}$/.test(clean);
+    }
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Reset
+        errorMsg.style.display = 'none';
+        successMsg.style.display = 'none';
+
+        // Get data
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => { data[key] = value; });
+
+        // Validate
+        if (!validateCCCD(data.cccd)) {
+            errorMsg.textContent = '⚠️ CCCD không hợp lệ (phải 9 hoặc 12 số)';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!validatePhone(data.soDienThoai)) {
+            errorMsg.textContent = '⚠️ Số điện thoại không hợp lệ';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        // Timestamp
+        data.thoiGian = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+        data.trangThai = 'Mới';
+
+        // Show loading
+        loading.style.display = 'block';
+        submitBtn.disabled = true;
+
+        try {
+            // Nếu chưa có GOOGLE_SCRIPT_URL → giả lập thành công
+            if (GOOGLE_SCRIPT_URL === 'URL_SCRIPT_GOOGLE') {
+                console.log('📋 DỮ LIỆU KHÁCH HÀNG:', JSON.stringify(data, null, 2));
+                await new Promise(r => setTimeout(r, 1000));
+                throw new Error('CHUA_CAU_HINH');
+            }
+
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(data)
+            });
+
+            // no-cors mode always returns opaque → treat as success
+            showSuccess();
+
+        } catch (err) {
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+
+            if (err.message === 'CHUA_CAU_HINH') {
+                errorMsg.innerHTML = '⚠️ <strong>Cần cấu hình Google Script!</strong><br>Xem hướng dẫn trong phần Code bên dưới.';
+                errorMsg.style.display = 'block';
+                // Vẫn hiển thị data trong console để test
+                console.log('✅ DATA READY FOR GOOGLE SHEETS');
+                return;
+            }
+
+            errorMsg.textContent = '⚠️ Có lỗi xảy ra, vui lòng thử lại hoặc gọi: 0918 212 460';
+            errorMsg.style.display = 'block';
+        }
+    });
+
+    function showSuccess() {
+        loading.style.display = 'none';
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+    }
+})();
+</script>
+</body>
+</html>
