@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veo Studio AI - Tạo Video Từ Văn Bản</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a12;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            padding: 16px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(10,10,18,0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25em;
+            font-weight: 800;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo i { font-size: 1.2em; }
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(167,139,250,0.15);
+            color: #a78bfa;
+            font-size: 0.8em;
+            font-weight: 600;
+            border: 1px solid rgba(167,139,250,0.3);
+        }
+
+        /* MAIN LAYOUT */
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 24px 4%;
+        }
+
+        /* LEFT: PROMPT */
+        .prompt-card {
+            background: #12121f;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        .prompt-card h2 {
+            font-size: 1.1em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .prompt-card h2 i { color: #a78bfa; }
+        .prompt-sub {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85em;
+            margin-bottom: 16px;
+        }
+        .prompt-textarea {
+            width: 100%;
+            min-height: 160px;
+            background: #0d0d18;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            padding: 16px;
+            resize: vertical;
+            line-height: 1.6;
+            transition: 0.3s;
+        }
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+        }
+        .prompt-textarea::placeholder { color: rgba(255,255,255,0.25); }
+        .char-count {
+            text-align: right;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.75em;
+            margin-top: 6px;
+        }
+        .examples {
+            margin-top: 14px;
+        }
+        .examples-label {
+            font-size: 0.75em;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chip:hover {
+            background: rgba(167,139,250,0.15);
+            border-color: #a78bfa;
+            color: #c4b5fd;
+        }
+
+        /* RIGHT: SETTINGS */
+        .settings-card {
+            background: #12121f;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .settings-card h2 {
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-card h2 i { color: #60a5fa; }
+
+        .setting-group label {
+            display: block;
+            font-size: 0.8em;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .ratio-btns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .ratio-btn {
+            padding: 10px 6px;
+            background: #0d0d18;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85em;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .ratio-btn.active {
+            background: rgba(167,139,250,0.15);
+            border-color: #a78bfa;
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+        .ratio-btn:hover { border-color: rgba(255,255,255,0.3); }
+
+        .duration-btns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0d0d18;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            transition: 0.3s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #a78bfa;
+        }
+        select option { background: #12121f; }
+
+        .api-key-row {
+            display: flex;
+            gap: 8px;
+        }
+        .api-key-row input { flex: 1; }
+        .api-key-row button {
+            padding: 12px 14px;
+            background: #0d0d18;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .api-key-row button:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+        .how-to {
+            font-size: 0.75em;
+            color: #60a5fa;
+            cursor: pointer;
+            margin-top: 6px;
+            display: inline-block;
+        }
+        .how-to:hover { text-decoration: underline; }
+
+        /* GENERATE BUTTON */
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139,92,246,0.3);
+        }
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* STATUS */
+        .status {
+            display: none;
+            background: #0d0d18;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        .status-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .status-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            border-radius: 3px;
+            transition: width 0.5s;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-text {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-text i { color: #a78bfa; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* RESULT */
+        .result-card {
+            display: none;
+            background: #12121f;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+        .result-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 1em;
+            color: #4ade80;
+        }
+        .result-card h3 i { font-size: 1.1em; }
+        video {
+            width: 100%;
+            border-radius: 12px;
+            background: #000;
+            max-height: 480px;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 12px 24px;
+            background: rgba(74,222,128,0.15);
+            border: 1px solid rgba(74,222,128,0.4);
+            border-radius: 10px;
+            color: #4ade80;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: 0.2s;
+        }
+        .download-btn:hover {
+            background: rgba(74,222,128,0.25);
+        }
+        .regenerate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            margin-left: 10px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .regenerate-btn:hover { background: rgba(255,255,255,0.1); }
+
+        /* ERROR */
+        .error-box {
+            display: none;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #f87171;
+            font-size: 0.85em;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        /* INFO BANNER */
+        .info-banner {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 4%;
+        }
+        .banner-inner {
+            background: linear-gradient(90deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1));
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .banner-inner i { color: #a78bfa; margin-top: 3px; }
+        .banner-inner b { color: #c4b5fd; }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8em;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 30px;
+        }
+
+        /* HOW TO MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #12121f;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 480px;
+            width: 100%;
+        }
+        .modal-content h3 {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-content h3 i { color: #a78bfa; }
+        .step-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.5;
+        }
+        .step-num {
+            min-width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .modal-close {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.1); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .main { grid-template-columns: 1fr; }
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo"><i class="fas fa-film"></i> Veo Studio AI</div>
+    <div class="header-right">
+        <span class="badge"><i class="fas fa-bolt"></i> Google Veo 3</span>
+        <span class="badge" style="background:rgba(74,222,128,0.12);color:#4ade80;border-color:rgba(74,222,128,0.3);">0đ</span>
+    </div>
+</header>
+
+<!-- INFO BANNER -->
+<div class="info-banner">
+    <div class="banner-inner">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <b>Text → Video bằng AI Google Veo 3.</b> Nhập mô tả, AI tạo video cinematic 5-8 giây.
+            Mỗi người dùng <b>API key Google AI Studio miễn phí</b> của chính mình — tool không thu phí,
+            không giới hạn, không cần tài khoản. Key chỉ lưu trên trình duyệt của bạn.
+        </div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- LEFT -->
+    <div>
+        <div class="prompt-card">
+            <h2><i class="fas fa-pen-fancy"></i> Mô tả video của bạn</h2>
+            <p class="prompt-sub">Càng chi tiết, video càng đẹp. Thêm phong cách: "cinematic, slow motion, ánh sáng vàng..."</p>
+            <textarea id="prompt" class="prompt-textarea" maxlength="500"
+                placeholder="VD: Một chú chó Golden Retriever chạy qua cánh đồng hoa hướng dương lúc hoàng hôn, máy quay chuyển động mượt, ánh sáng vàng ấm, cinematic..."></textarea>
+            <div class="char-count"><span id="charCount">0</span>/500</div>
+            <div class="examples">
+                <div class="examples-label">✨ Ví dụ nhanh</div>
+                <div class="example-chips">
+                    <span class="chip">🏝️ Cảnh biển nhiệt đới</span>
+                    <span class="chip">🚗 Quảng cáo xe hơi</span>
+                    <span class="chip">🍜 Món ăn hấp dẫn</span>
+                    <span class="chip">🌌 Vũ trụ nebula</span>
+                    <span class="chip">👤 Portrait cinematic</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="status" id="statusBox">
+            <div class="status-bar"><div class="status-fill" id="statusFill"></div></div>
+            <div class="status-text">
+                <span id="statusText"><i class="fas fa-circle-notch"></i> Đang gửi yêu cầu...</span>
+                <span id="statusTime"></span>
+            </div>
+        </div>
+
+        <!-- ERROR -->
+        <div class="error-box" id="errorBox"></div>
+
+        <!-- RESULT -->
+        <div class="result-card" id="resultCard">
+            <h3><i class="fas fa-check-circle"></i> Video đã tạo thành công!</h3>
+            <video id="resultVideo" controls playsinline></video>
+            <div>
+                <a class="download-btn" id="downloadBtn" download="veo_video.mp4"><i class="fas fa-download"></i> Tải video</a>
+                <span class="regenerate-btn" id="regenerateBtn"><i class="fas fa-redo"></i> Tạo lại</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: SETTINGS -->
+    <div class="settings-card">
+        <h2><i class="fas fa-sliders-h"></i> Cài đặt</h2>
+
+        <div class="setting-group">
+            <label>Tỷ lệ khung hình</label>
+            <div class="ratio-btns">
+                <div class="ratio-btn active" data-ratio="16:9" onclick="setRatio(this)">16:9<br><small>Cinematic</small></div>
+                <div class="ratio-btn" data-ratio="9:16" onclick="setRatio(this)">9:16<br><small>Reels/Shorts</small></div>
+                <div class="ratio-btn" data-ratio="1:1" onclick="setRatio(this)">1:1<br><small>Square</small></div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <label>Thời lượng</label>
+            <div class="duration-btns">
+                <div class="ratio-btn active" data-dur="5" onclick="setDuration(this)">5 giây<br><small>Nhanh</small></div>
+                <div class="ratio-btn" data-dur="8" onclick="setDuration(this)">8 giây<br><small>Chất lượng</small></div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <label>Model AI</label>
+            <select id="modelSelect">
+                <option value="veo-3.1-generate-001">Veo 3.1 (mới nhất)</option>
+                <option value="veo-3.0-generate-001">Veo 3.0</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>Độ phân giải</label>
+            <select id="resSelect">
+                <option value="720p">720p (nhanh, tiết kiệm)</option>
+                <option value="auto">Auto (theo tỷ lệ)</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>Negative prompt (tùy chọn)</label>
+            <input type="text" id="negativePrompt" placeholder="VD: mờ, méo, thừa ngón tay, chất lượng kém">
+        </div>
+
+        <div class="setting-group">
+            <label>Seed (tùy chọn, để trống = random)</label>
+            <input type="number" id="seedInput" placeholder="VD: 42">
+        </div>
+
+        <div class="setting-group">
+            <label><i class="fas fa-key" style="margin-right:4px;"></i> API Key Google AI Studio</label>
+            <div class="api-key-row">
+                <input type="password" id="apiKey" placeholder="Paste API key..." autocomplete="off">
+                <button onclick="toggleKey()" title="Hiện/Ẩn"><i class="fas fa-eye"></i></button>
+            </div>
+            <span class="how-to" onclick="openModal()"><i class="fas fa-question-circle"></i> Lấy API key miễn phí ở đâu?</span>
+        </div>
+
+        <button class="generate-btn" id="generateBtn" onclick="generate()">
+            <i class="fas fa-magic"></i> TẠO VIDEO
+        </button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    Veo Studio AI — Chạy trên Google Veo 3 • API key do người dùng tự cung cấp • © 2026
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="howtoModal">
+    <div class="modal-content">
+        <h3><i class="fas fa-key"></i> Lấy API key miễn phí</h3>
+        <div class="step-item">
+            <div class="step-num">1</div>
+            <div>Vào <b>https://aistudio.google.com/apikey</b> (đăng nhập Google account)</div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">2</div>
+            <div>Click <b>"Create API key"</b> → chọn project (hoặc tạo mới)</div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">3</div>
+            <div>Copy key dạng <b>AIza...</b> → dán vào ô API key ở bên phải</div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">4</div>
+            <div>Nhấn <b>TẠO VIDEO</b> — xong! Key được lưu trên trình duyệt, lần sau khỏi nhập lại</div>
+        </div>
+        <div style="font-size:0.78em;color:rgba(255,255,255,0.4);background:#0d0d18;border-radius:10px;padding:12px;margin-bottom:10px;line-height:1.6;">
+            💡 Google AI Studio có gói miễn phí cho Veo (giới hạn lượt/ngày). Nếu cần nhiều hơn, xem bảng giá tại aistudio.google.com. Key của bạn không gửi đi đâu — chỉ kết nối trực tiếp với Google.
+        </div>
+        <button class="modal-close" onclick="closeModal()">Đóng</button>
+    </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentRatio = '16:9';
+let currentDuration = 5;
+let videoData = null;
+
+// ===== API KEY =====
+const savedKey = localStorage.getItem('veo_api_key');
+if (savedKey) document.getElementById('apiKey').value = savedKey;
+
+function toggleKey() {
+    const input = document.getElementById('apiKey');
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+// ===== SETTINGS =====
+function setRatio(el) {
+    document.querySelectorAll('.ratio-btn[data-ratio]').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentRatio = el.dataset.ratio;
+}
+function setDuration(el) {
+    document.querySelectorAll('.ratio-btn[data-dur]').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentDuration = parseInt(el.dataset.dur);
+}
+
+// ===== EXAMPLES =====
+const EXAMPLES = {
+    '🏝️ Cảnh biển nhiệt đới': 'Cảnh quay drone bay qua bãi biển nhiệt đới lúc bình minh, nước xanh ngọc, sóng nhẹ vỗ bờ, cây dừa nghiêng, ánh nắng vàng ấm, cinematic, chất lượng 4K',
+    '🚗 Quảng cáo xe hơi': 'Quảng cáo xe SUV màu đen chạy trên đường núi quanh co, camera đuổi theo từ phía sau, tốc độ cao, bụi bay sau bánh xe, ánh sáng hoàng hôn vàng cam, cinematic, slow motion',
+    '🍜 Món ăn hấp dẫn': 'Cận cảnh mì ramen nóng hổi, hơi nước bốc lên, đũa gắp sợi mì, trứng lòng đào cắt đôi, hành lá tươi, ánh sáng ấm từ đèn, quay chậm, food commercial, cinematic',
+    '🌌 Vũ trụ nebula': 'Bay xuyên qua tinh vân màu tím và xanh, hàng nghìn ngôi sao, khí gas phát sáng, cảnh vũ trụ rộng lớn, cinematic, siêu thực, chất lượng cao',
+    '👤 Portrait cinematic': 'Cận cảnh chân dung người phụ nữ trong ánh sáng nghiêng vàng ấm, nền đen, mắt nhìn xa, gió nhẹ thổi tóc, cinematic portrait, bokeh, 35mm film'
+};
+
+document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.getElementById('prompt').value = EXAMPLES[chip.textContent.trim()];
+        document.getElementById('charCount').textContent = EXAMPLES[chip.textContent.trim()].length;
+    });
+});
+
+// ===== CHAR COUNT =====
+document.getElementById('prompt').addEventListener('input', e => {
+    document.getElementById('charCount').textContent = e.target.value.length;
+});
+
+// ===== MODAL =====
+function openModal() { document.getElementById('howtoModal').classList.add('show'); }
+function closeModal() { document.getElementById('howtoModal').classList.remove('show'); }
+document.getElementById('howtoModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// ===== GENERATE =====
+const API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+
+function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.innerHTML = msg;
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 10000);
+}
+
+function showStatus(text) {
+    const box = document.getElementById('statusBox');
+    box.style.display = 'block';
+    document.getElementById('statusText').innerHTML = '<i class="fas fa-circle-notch"></i> ' + text;
+    document.getElementById('statusFill').style.width = '15%';
+}
+
+function updateStatus(text, pct) {
+    document.getElementById('statusText').innerHTML = '<i class="fas fa-circle-notch"></i> ' + text;
+    document.getElementById('statusFill').style.width = pct + '%';
+    document.getElementById('statusTime').textContent = new Date().toLocaleTimeString('vi-VN');
+}
+
+function hideStatus() { document.getElementById('statusBox').style.display = 'none'; }
+
+async function generate() {
+    const prompt = document.getElementById('prompt').value.trim();
+    const key = document.getElementById('apiKey').value.trim();
+
+    if (!prompt) return showError('⚠️ Vui lòng nhập mô tả video trước!');
+    if (!key) return showError('⚠️ Vui lòng dán API key! Click "Lấy API key miễn phí ở đâu?" để xem hướng dẫn.');
+
+    // Save key
+    localStorage.setItem('veo_api_key', key);
+    document.getElementById('errorBox').style.display = 'none';
+    document.getElementById('resultCard').style.display = 'none';
+    videoData = null;
+
+    // Build request
+    const model = document.getElementById('modelSelect').value;
+    const resolution = document.getElementById('resSelect').value;
+    const negativePrompt = document.getElementById('negativePrompt').value.trim();
+    const seed = document.getElementById('seedInput').value;
+
+    const instance = { prompt };
+    const params = {
+        aspectRatio: currentRatio,
+        durationSeconds: currentDuration,
+        resolution
+    };
+    if (negativePrompt) params.negativePrompt = negativePrompt;
+    if (seed) params.seed = parseInt(seed);
+
+    const url = `${API_BASE}/models/${model}:predictLongRunning?key=${key}`;
+
+    showStatus('Đang gửi yêu cầu tạo video...');
+    document.getElementById('generateBtn').disabled = true;
+    const startTime = Date.now();
+
+    try {
+        // 1. Submit
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ instances: [instance], parameters: params })
+        });
+
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            const msg = err.error?.message || `HTTP ${resp.status}`;
+            throw new Error(msg);
+        }
+
+        const op = await resp.json();
+        if (!op.name) throw new Error('Phản hồi không hợp lệ từ Google API');
+
+        // 2. Poll operation
+        updateStatus('Đang tạo video... thường mất 1-3 phút', 30);
+
+        let elapsed = 0;
+        while (true) {
+            await new Promise(r => setTimeout(r, 6000));
+            elapsed += 6;
+
+            const pollResp = await fetch(`${API_BASE}/${op.name}?key=${key}`);
+            if (!pollResp.ok) {
+                const err = await pollResp.json().catch(() => ({}));
+                throw new Error(err.error?.message || `HTTP ${pollResp.status}`);
+            }
+            const poll = await pollResp.json();
+
+            if (poll.done) {
+                updateStatus('Đang tải video về...', 90);
+                const videos = poll.response?.generatedVideos || [];
+                if (!videos.length) throw new Error('Google không trả về video. Thử lại với prompt khác.');
+                const vid = videos[0].video;
+                videoData = vid;
+                showResult(vid);
+                return;
+            }
+
+            // Progress estimate
+            const pct = Math.min(85, 30 + (elapsed / 120) * 55);
+            const secs = Math.floor((Date.now() - startTime) / 1000);
+            updateStatus(`Đang tạo video... (${secs}s)`, pct);
+        }
+    } catch (err) {
+        hideStatus();
+        let msg = '⚠️ ' + (err.message || 'Lỗi không xác định');
+        if (err.message && err.message.includes('API key')) {
+            msg += '<br><b>API key không hợp lệ.</b> Kiểm tra lại key tại aistudio.google.com/apikey';
+        } else if (err.message && (err.message.includes('quota') || err.message.includes('limit') || err.message.includes('429'))) {
+            msg += '<br>Bạn đã hết lượt miễn phí hôm nay — thử lại mai hoặc dùng key khác.';
+        } else if (err.message && err.message.includes('PERMISSION')) {
+            msg += '<br>Key không được phép dùng Veo. Vào <b>https://aistudio.google.com</b> kiểm tra quyền truy cập Veo.';
+        }
+        showError(msg);
+    } finally {
+        document.getElementById('generateBtn').disabled = false;
+    }
+}
+
+function showResult(vid) {
+    hideStatus();
+    const card = document.getElementById('resultCard');
+    const video = document.getElementById('resultVideo');
+
+    let src = null;
+    if (vid.bytesBase64Encoded) {
+        src = 'data:video/mp4;base64,' + vid.bytesBase64Encoded;
+    } else if (vid.uri) {
+        src = vid.uri;
+    }
+
+    if (!src) {
+        showError('⚠️ Không lấy được video. Thử lại.');
+        return;
+    }
+
+    video.src = src;
+    card.style.display = 'block';
+    document.getElementById('downloadBtn').href = src;
+    // Try to give a nice filename
+    try { document.getElementById('downloadBtn').download = 'veo_video_' + Date.now() + '.mp4'; } catch(e) {}
+}
+
+// ===== REGENERATE =====
+document.getElementById('regenerateBtn').addEventListener('click', () => {
+    document.getElementById('resultCard').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    generate();
+});
+
+// ===== ESC CLOSE MODAL =====
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
